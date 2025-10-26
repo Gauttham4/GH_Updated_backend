@@ -1,7 +1,7 @@
 // server.js - Node.js Backend for OTP Service
 const express = require('express');
 const nodemailer = require('nodemailer');
-const twilio = require('twilio');
+// const twilio = require('twilio');
 const cors = require('cors');
 const crypto = require('crypto');
 require('dotenv').config();
@@ -25,11 +25,11 @@ const emailTransporter = nodemailer.createTransport({
   },
 });
 
-// Twilio configuration for SMS
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// // Twilio configuration for SMS
+// const twilioClient = twilio(
+//   process.env.TWILIO_ACCOUNT_SID,
+//   process.env.TWILIO_AUTH_TOKEN
+// );
 
 // Generate 6-digit OTP
 function generateOTP() {
@@ -150,43 +150,43 @@ app.post('/send-email-otp', async (req, res) => {
   }
 });
 
-// Send OTP via SMS
-app.post('/send-sms-otp', async (req, res) => {
-  try {
-    const { phone, userName } = req.body;
+// // Send OTP via SMS
+// app.post('/send-sms-otp', async (req, res) => {
+//   try {
+//     const { phone, userName } = req.body;
     
-    if (!phone) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Phone number is required' 
-      });
-    }
+//     if (!phone) {
+//       return res.status(400).json({ 
+//         success: false, 
+//         message: 'Phone number is required' 
+//       });
+//     }
     
-    const otp = generateOTP();
-    storeOTP(phone, otp);
+//     const otp = generateOTP();
+//     storeOTP(phone, otp);
     
-    const message = `Hello ${userName || 'User'}! Your OTP for Education App login is: ${otp}. This code will expire in 10 minutes. Do not share this code with anyone.`;
+//     const message = `Hello ${userName || 'User'}! Your OTP for Education App login is: ${otp}. This code will expire in 10 minutes. Do not share this code with anyone.`;
     
-    await twilioClient.messages.create({
-      body: message,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phone
-    });
+      // await twilioClient.messages.create({
+      //   body: message,
+      //   from: process.env.TWILIO_PHONE_NUMBER,
+      //   to: phone
+      // });
     
-    res.json({ 
-      success: true, 
-      message: 'OTP sent successfully to your phone',
-      expiresIn: '10 minutes'
-    });
+//     res.json({ 
+//       success: true, 
+//       message: 'OTP sent successfully to your phone',
+//       expiresIn: '10 minutes'
+//     });
     
-  } catch (error) {
-    console.error('SMS sending error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Failed to send OTP SMS' 
-    });
-  }
-});
+//   } catch (error) {
+//     console.error('SMS sending error:', error);
+//     res.status(500).json({ 
+//       success: false, 
+//       message: 'Failed to send OTP SMS' 
+//     });
+//   }
+// });
 
 // Verify OTP
 app.post('/verify-otp', (req, res) => {
